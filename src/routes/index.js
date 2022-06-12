@@ -9,10 +9,10 @@ const eventRouter = require('./eventRouter')
 const organizationRouter = require('./organizationRouter')
 const categoryRouter = require('./categoryRouter')
 
-if(isDev) {
-  //Для тестирования фронта все руты отрабатывают с задержкой
-  rootRouter.use('/', (req,res, next) => setTimeout(next, 500))
-}
+// if(isDev) {
+//   //Для тестирования фронта все руты отрабатывают с задержкой
+//   rootRouter.use('/', (req,res, next) => setTimeout(next, 500))
+// }
 
 rootRouter.use('/tasks', taskRouter);
 rootRouter.use('/auth', authRouter)

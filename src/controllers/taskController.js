@@ -16,6 +16,7 @@ const methodsWrapper = require('../utils/helpers/methodsWrapper');
 const SearchService = require('../services/searchService');
 const TaskDto = require('../dtos/tasksDto');
 const checkValidationErrors = require('../utils/helpers/checkValidationErrors');
+const ApiError = require('../errors/apiError');
 
 class TaskController {
 
@@ -71,7 +72,7 @@ class TaskController {
     res.json(allTasks);
   };
 
-  createNewTask = async (req, res) => {
+  createNewTask = async (req, res, next) => {
     const { title, description, CategoryId, tags, skills, deadline } = req.body;
     const t = await sequelize.transaction();
     try {
@@ -91,6 +92,7 @@ class TaskController {
         { transaction: t }
       );
       if (tags) {
+        console.log(tags, 'tags')
         const tagToCreate = tags.map((el) => ({
           id: el.replace(/\s/g, ''),
           tag: el,
@@ -148,8 +150,7 @@ class TaskController {
 
       res.json(taskToFront);
     } catch (error) {
-      console.log(error);
-      res.json(error)
+      next(new ApiError(403, error.message))
       await t.rollback();
     }
   };

@@ -37,7 +37,7 @@ module.exports = {
       },
       avatar: {
         type: Sequelize.STRING,
-        defaultValue: 'https://cdnn21.img.ria.ru/images/07e6/03/0f/1778210054_0:0:2778:1563_1920x0_80_0_0_7f2dc749e8344dfd222575ae3a475fd5.jpg.webp'
+        defaultValue: 'https://анучинский.рф/upload/iblock/0a5/0a547b9983be1d890e6b8fe5d230b3e3.jpeg'
       },
       rating: {
         type: Sequelize.FLOAT,
