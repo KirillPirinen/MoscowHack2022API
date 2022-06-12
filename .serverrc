@@ -1,0 +1,38 @@
+const descriptor = require('./src/utils/helpers/descriptor')
+const { isDev, defaultPort, majorVersion } = require('./src/utils/constants')
+
+const CONFIG = {
+  api: {
+    version: majorVersion,
+    PORT: process.env.SERVER_PORT ?? defaultPort,
+    url: isDev ? `http://localhost:${defaultPort}` : `${process.env.API_URL}:${process.env.SERVER_PORT}`
+  },
+  cors: {
+    origin: isDev ? true : process.env.CLIENT_URL,
+    credentials: true
+  },
+  cookie: {
+    sameSite: 'none',
+    secure: true,
+    httpOnly: true,
+    maxAge: 1296e6, //15 суток
+  },
+  validator: {
+    password: { min: 6, max: 15 }
+  },
+  encryption: {
+    salt: isDev ? 4 : process.env.HASH_NUM
+  },
+  tokens: {
+    access: {
+      secret: process.env.JWT_ACCESS_SECRET || 'accessDev',
+      options: { expiresIn: '1m' }
+    },
+    refresh: {
+      secret: process.env.JWT_REFRESH_SECRET || 'refreshDev',
+      options: { expiresIn: '15 days' }
+    }
+  }
+}
+
+module.exports = descriptor(CONFIG)
