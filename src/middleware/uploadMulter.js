@@ -5,7 +5,7 @@ const { foldersMap } = require('../utils/constants')
 const storage = multer.diskStorage({
   destination(req, file, cb) {
     const folderName = foldersMap[file.fieldname]
-
+    
     cb(null, `./public/uploads/${folderName}`)
   },
   filename(req, file, cb) {

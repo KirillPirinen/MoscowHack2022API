@@ -13,7 +13,7 @@ module.exports = {
         allowNull: false,
       },
       description: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: false,
       },
       deadline: {
@@ -46,6 +46,9 @@ module.exports = {
           model: 'Categories',
           key: 'id'
         }
+      },
+      image: {
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,

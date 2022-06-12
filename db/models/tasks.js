@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
   Tasks.init(
     {
       title: DataTypes.STRING,
-      description: DataTypes.STRING,
+      description: DataTypes.TEXT,
       location: DataTypes.STRING,
       deadline: DataTypes.DATE,
       responses: DataTypes.INTEGER,
@@ -42,6 +42,7 @@ module.exports = (sequelize, DataTypes) => {
       ),
       UserId: DataTypes.INTEGER,
       CategoryId: DataTypes.STRING,
+      image: DataTypes.STRING,
     },
     {
       sequelize,

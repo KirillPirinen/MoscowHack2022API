@@ -12,7 +12,7 @@ class UserController {
 
   getUserInfo = async (req, res) => {
     const user = await Users.findOne({ where: { id: req.user.id }, include: [
-      {model: Tasks, as: 'Volunteer'},
+      {model: Tasks, as: 'Volunteer', include: { model: Users, as: 'Creator' }},
       {model: Tasks, as: 'Creator'},
       {model: Events },
       { model: Reviews, as: 'Reciever', include: { model: Users, as: 'Reviewer' } },

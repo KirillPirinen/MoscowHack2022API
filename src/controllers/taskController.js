@@ -7,17 +7,13 @@ const {
   TasksTags,
   TasksSkills,
   UserTasks,
-  Comments
+  Categories,
+  Comments,
+  Sequelize: { Op },
+  sequelize
 } = require('../../db/models');
 const methodsWrapper = require('../utils/helpers/methodsWrapper');
-const { Sequelize } = require('sequelize');
-const sequelize = new Sequelize('mosvolonter', 'mosvolonter', '123', {
-  host: 'localhost',
-  dialect: 'postgres',
-});
-const errorMsg = require('../errors/errorMsg');
-const { Op } = require('sequelize');
-const SearchService = require('../services/searchService')
+const SearchService = require('../services/searchService');
 const TaskDto = require('../dtos/tasksDto');
 const checkValidationErrors = require('../utils/helpers/checkValidationErrors');
 
@@ -43,10 +39,19 @@ class TaskController {
   }
 
   findTasksByQuery = async (req, res) => {
-    checkValidationErrors(req)
-    const tasks = await SearchService.findTasksByString(req.query.text || '')
-    res.json(tasks.map(task => new TaskDto(task)))
-  }
+    checkValidationErrors(req);
+    const tasks = await SearchService.findTasksByString(req.query.text || '');
+    res.json(tasks.map((task) => new TaskDto(task)));
+  };
+
+  sendCategories = async (req, res) => {
+    const categories = await Categories.findAll();
+    const dataToFront = categories.map((el) => ({
+      value: el.id,
+      item: el.text,
+    }));
+    res.json(dataToFront);
+  };
 
   getAllTasksByCategory = async (req, res) => {
     checkValidationErrors(req)
@@ -63,16 +68,15 @@ class TaskController {
       where: { UserId },
       include: [{ model: Tags }, { model: Skills }],
     });
-    console.log(allTasks);
     res.json(allTasks);
   };
 
   createNewTask = async (req, res) => {
-    const UserId = 1; //пока с фронта не шлем айди он захардкожен
-    
     const { title, description, CategoryId, tags, skills, deadline } = req.body;
     const t = await sequelize.transaction();
     try {
+      const image = req?.file?.filename || ''
+      const UserId = req.user.id;
       const newTask = await Tasks.create(
         {
           title,
@@ -80,6 +84,9 @@ class TaskController {
           deadline,
           UserId,
           CategoryId,
+          responses: 0,
+          status: 'Search',
+          image
         },
         { transaction: t }
       );
@@ -124,10 +131,25 @@ class TaskController {
         },
         { transaction: t }
       );
+
       await t.commit();
-      res.json('Задача создана');
+
+      const user = await Users.findOne({where: { id: UserId}})
+
+      const taskInstance = await Tasks.findOne({
+        where: { id: newTask.id },
+        include: [{ model: Tags }, { model: Skills }],
+      });
+
+      taskInstance.Creator = user
+      taskInstance.location = 'Москва'
+
+      const taskToFront = new TaskDto(taskInstance)
+
+      res.json(taskToFront);
     } catch (error) {
-      res.json(error);
+      console.log(error);
+      res.json(error)
       await t.rollback();
     }
   };

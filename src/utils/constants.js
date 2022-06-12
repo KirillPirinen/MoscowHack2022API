@@ -14,7 +14,8 @@ const CONSTANTS = {
     admin: 'admin'
   },
   foldersMap: {
-    avatar: 'avatars'
+    avatar: 'avatars',
+    taskImg: 'taskImgs'
   }
 }
 

@@ -1,8 +1,11 @@
 const taskRouter = require('express').Router()
 const taskController = require('../controllers/taskController')
+const checkToken = require('../middleware/checkToken')
+const upload = require('../middleware/uploadMulter')
 const { query, param } = require('express-validator')
 const queryGetParamsMiddleware = require('../middleware/queryGetParams')
 const queryToInclude = require('../middleware/queryToInclude')
+
 
 taskRouter
 
@@ -18,6 +21,7 @@ taskController.getAllTasksByCategory)
 .get('/specific/:id?', queryToInclude(['Tags']), queryGetParamsMiddleware({ model: 'Tasks' }), taskController.getTasks)
 
 .get('/', taskController.getAllUserTasks)
-.post('/create', taskController.createNewTask)
+.post('/create', checkToken, upload.single('taskImg'), taskController.createNewTask)
+.get('/getgategories', taskController.sendCategories)
 
 module.exports = taskRouter

@@ -1,10 +1,10 @@
 #uploads
 # exclude everything
 public/uploads/avatars/*
-
+public/uploads/taskImgs/*
 # exception to the rule
 !public/uploads/avatars/.gitkeep 
-
+!public/uploads/taskImgs/.gitkeep 
 # Logs
 *.log
 npm-debug.log*
